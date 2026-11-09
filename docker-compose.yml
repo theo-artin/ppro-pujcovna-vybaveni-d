@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: hory_voda_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ppro_user
+      POSTGRES_PASSWORD: ppro_password_synthetic_only
+      POSTGRES_DB: hory_a_voda_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ppro_user -d hory_a_voda_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hory_voda_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://ppro_user:ppro_password_synthetic_only@db:5432/hory_a_voda_db
+      SECRET_KEY: ppro-secret-docker-synthetic-key-change-in-prod
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

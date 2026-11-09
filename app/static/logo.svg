@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Mountain Peak: Alpine Amber -->
+  <path d="M6 38L24 8L42 38H6Z" stroke="#d97706" stroke-width="3" stroke-linejoin="round" fill="rgba(245, 158, 11, 0.12)"/>
+  <path d="M17 38L24 25L31 38" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Glacier River Wave: Glacier Blue -->
+  <path d="M3 42C9 39.5 15 44 21 41.5C27 39 33 43.5 39 41.5C42.5 40.3 45.5 41.5 47 42" stroke="#0284c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M7 45.5C13 43.5 19 47 25 45C31 43 37 46.5 43 45" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

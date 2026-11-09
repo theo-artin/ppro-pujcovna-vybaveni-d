@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Půjčovna sportovního vybavení Hory &amp; Voda – Správa inventáře a rezervace</title>
+  <meta name="description" content="Oficiální systém Půjčovny sportovního vybavení Hory &amp; Voda. Přehled inventáře, dostupnost, rezervace a ceníky.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=4.5">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header-inner">
+
+      <!-- Brand -->
+      <a class="brand" href="/" aria-label="Půjčovna sportovního vybavení Hory & Voda – domovská stránka">
+        <img src="/static/logo.svg" alt="Logo Půjčovna Hory & Voda" class="brand-mark" width="38" height="38">
+        <div class="brand-text">
+          <span class="brand-eyebrow">PŮJČOVNA SPORTOVNÍHO VYBAVENÍ</span>
+          <span class="brand-name">Hory &amp; Voda</span>
+        </div>
+      </a>
+
+      <!-- Navigation tabs (Desktop) -->
+      <nav class="main-nav" role="tablist" aria-label="Hlavní navigace">
+        <button class="nav-link active" role="tab" aria-selected="true" data-tab="dashboard" id="tab-btn-dashboard">Ranní přehled</button>
+        <button class="nav-link" role="tab" aria-selected="false" data-tab="rezervace" id="tab-btn-rezervace">Rezervace</button>
+        <button class="nav-link" role="tab" aria-selected="false" data-tab="cenik" id="tab-btn-cenik">Ceníky a kategorie</button>
+      </nav>
+
+      <!-- Mobile navigation dropdown (Pouze pro mobilní telefony a tablety místo slideru) -->
+      <div class="mobile-nav-dropdown" id="mobile-nav-dropdown">
+        <button type="button" class="mobile-nav-trigger" id="mobile-nav-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Vyberte stránku">
+          <div class="mobile-nav-trigger-content">
+            <span class="mobile-nav-trigger-badge">Stránka</span>
+            <span class="mobile-nav-trigger-text" id="mobile-nav-trigger-text">Ranní přehled inventáře</span>
+          </div>
+          <svg class="mobile-nav-trigger-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="mobile-nav-menu" id="mobile-nav-menu" role="listbox">
+          <button type="button" class="mobile-nav-item active" data-tab="dashboard" role="option" aria-selected="true">
+            <span class="mobile-nav-item-icon">📊</span>
+            <div class="mobile-nav-item-info">
+              <span class="mobile-nav-item-title">Ranní přehled inventáře</span>
+              <span class="mobile-nav-item-desc">Stav inventáře, KPI přehledy a rychlé vyhledávání</span>
+            </div>
+            <span class="mobile-nav-item-check" aria-hidden="true">✓</span>
+          </button>
+          <button type="button" class="mobile-nav-item" data-tab="rezervace" role="option" aria-selected="false">
+            <span class="mobile-nav-item-icon">📝</span>
+            <div class="mobile-nav-item-info">
+              <span class="mobile-nav-item-title">Rezervace vybavení</span>
+              <span class="mobile-nav-item-desc">Online rezervace kusu a výdej pro personál</span>
+            </div>
+            <span class="mobile-nav-item-check" aria-hidden="true">✓</span>
+          </button>
+          <button type="button" class="mobile-nav-item" data-tab="cenik" role="option" aria-selected="false">
+            <span class="mobile-nav-item-icon">🏷️</span>
+            <div class="mobile-nav-item-info">
+              <span class="mobile-nav-item-title">Ceníky a kategorie</span>
+              <span class="mobile-nav-item-desc">Přehled tarifů pro půlden, den i víkend a správa</span>
+            </div>
+            <span class="mobile-nav-item-check" aria-hidden="true">✓</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Auth -->
+      <div class="header-right">
+        <div id="user-info" class="user-chip hidden">
+          <span id="user-name-display">obsluha</span>
+          <button id="btn-logout" class="btn btn-ghost btn-xs">Odhlásit</button>
+        </div>
+        <button id="btn-open-login" class="btn btn-ink btn-sm">Přihlášení personálu</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════════════ -->
+  <main class="page-body">
+
+    <!-- ─────────────────────────────────────────────────────
+         TAB 1 – RANNÍ PŘEHLED / DASHBOARD
+    ───────────────────────────────────────────────────── -->
+    <section id="panel-dashboard" class="tab-panel active" role="tabpanel" aria-labelledby="tab-btn-dashboard">
+
+      <!-- Hero Banner v horní třetině hlavní stránky -->
+      <section class="hero-card" aria-label="Představení půjčovny">
+        <div class="hero-image-wrap">
+          <img src="/static/hero.jpg" alt="Půjčovna sportovního vybavení Hory & Voda – interiér a horské zázemí" class="hero-img">
+          <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+          <h2 class="hero-title">Špičková výstroj pro horské vrcholy i divoké peřeje</h2>
+          <p class="hero-lead">Kompletní vybavení na hory, skialpy, via ferraty i vodní toky. Profesionálně seřízeno a připraveno k rannímu odbavení.</p>
+        </div>
+      </section>
+
+      <div class="page-head">
+        <div>
+          <h2 class="page-title">Aktuální stav inventáře</h2>
+          <p class="page-sub">Kliknutím na kartu filtrujete seznam vybavení podle stavu</p>
+        </div>
+        <button id="btn-open-add-equipment" class="btn btn-ink btn-md">+ Zaevidovat kus</button>
+      </div>
+
+      <!-- KPI Filter Strip -->
+      <div class="kpi-strip" role="group" aria-label="Filtrovat inventář">
+        <button type="button" class="kpi-btn kpi-available active" data-status-filter="AVAILABLE" title="Zobrazit volné vybavení k půjčení">
+          <span class="kpi-number" id="stat-count-available">0</span>
+          <span class="kpi-label">Volné k půjčení</span>
+        </button>
+
+        <button type="button" class="kpi-btn kpi-service" data-status-filter="IN_SERVICE" title="Zobrazit vybavení v servisu">
+          <span class="kpi-number" id="stat-count-service">0</span>
+          <span class="kpi-label">V servisu</span>
+        </button>
+
+        <button type="button" class="kpi-btn kpi-rented" data-status-filter="RENTED_OR_RESERVED" title="Zobrazit půjčené a rezervované kusy">
+          <span class="kpi-number" id="stat-count-rented">0</span>
+          <span class="kpi-label">Půjčeno / Rezervováno</span>
+        </button>
+
+        <button type="button" class="kpi-btn kpi-total" data-status-filter="" title="Zobrazit celý inventář">
+          <span class="kpi-number" id="stat-count-total">0</span>
+          <span class="kpi-label">Celý inventář</span>
+        </button>
+      </div>
+
+      <!-- Inventory Table Card -->
+      <div class="card">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-wrap">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="filter-search" placeholder="Hledat inv. číslo nebo velikost…" aria-label="Vyhledat vybavení">
+            </div>
+            <select id="filter-category" class="filter-select" aria-label="Filtrovat podle kategorie">
+              <option value="">Všechny kategorie</option>
+            </select>
+          </div>
+          <div class="toolbar-right">
+            <span id="table-results-count" class="count-badge">Načítám…</span>
+            <button id="btn-refresh" class="btn btn-secondary btn-sm" title="Obnovit data">Obnovit</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" aria-label="Inventář vybavení">
+            <thead>
+              <tr>
+                <th>Inv. číslo</th>
+                <th>Kategorie</th>
+                <th>Velikost</th>
+                <th>Rok</th>
+                <th>Stav opotřebení</th>
+                <th>Cena / den&nbsp;&nbsp;Víkend</th>
+                <th>Status</th>
+                <th class="text-right">Akce</th>
+              </tr>
+            </thead>
+            <tbody id="equipment-table-body">
+              <tr>
+                <td colspan="8" class="text-center py-6 text-muted">Načítám inventář…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────
+         TAB 2 – REZERVACE
+    ───────────────────────────────────────────────────── -->
+    <section id="panel-rezervace" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-rezervace">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Nová rezervace</h1>
+          <p class="page-sub">Vyberete vybavení, tarif a zadáte údaje zákazníka</p>
+        </div>
+      </div>
+
+      <div class="booking-grid">
+
+        <!-- Left column: equipment & tariff -->
+        <div>
+
+          <!-- Step 1: Equipment -->
+          <div class="section-card">
+            <div class="section-card-head">
+              <span class="step-badge">1</span>
+              <h3>Výběr vybavení</h3>
+            </div>
+            <div class="section-card-body">
+              <div class="grid-2">
+                <div class="field">
+                  <label for="res-category">Kategorie *</label>
+                  <select id="res-category" required>
+                    <option value="">— Vyberte kategorii —</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="res-item">Dostupný kus *</label>
+                  <select id="res-item" required disabled>
+                    <option value="">— Nejprve zvolte kategorii —</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="res-item-details" class="item-preview-bar hidden">
+                <span class="preview-label">Vybraný kus</span>
+                <div>
+                  <strong id="prev-inv">SKI-001</strong>&nbsp;&bull;&nbsp;<span id="prev-size">170 cm</span>
+                  <span id="prev-desc" class="text-muted text-sm" style="margin-left:.5rem;"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Tariff -->
+          <div class="section-card">
+            <div class="section-card-head">
+              <span class="step-badge">2</span>
+              <h3>Tarif a termín</h3>
+            </div>
+            <div class="section-card-body">
+              <div class="field">
+                <label for="res-date">Datum začátku výpůjčky *</label>
+                <input type="date" id="res-date" required>
+                <small class="field-hint">Rezervace je garantována do 10:00 (+30 min tolerance do 10:30).</small>
+              </div>
+
+              <div class="field">
+                <label>Časový blok *</label>
+                <div class="tariff-grid">
+                  <label class="tariff-option">
+                    <input type="radio" name="rental-block" value="HALFDAY_MORNING">
+                    <span class="tariff-tile">
+                      <span class="tariff-name">Půlden – Ranní</span>
+                      <span class="tariff-hours">08:00 – 13:00</span>
+                      <span class="tariff-price" id="price-halfday-m">od 250 Kč</span>
+                    </span>
+                  </label>
+
+                  <label class="tariff-option">
+                    <input type="radio" name="rental-block" value="HALFDAY_AFTERNOON">
+                    <span class="tariff-tile">
+                      <span class="tariff-name">Půlden – Odpoledne</span>
+                      <span class="tariff-hours">13:00 – 18:00</span>
+                      <span class="tariff-price" id="price-halfday-a">od 250 Kč</span>
+                    </span>
+                  </label>
+
+                  <label class="tariff-option">
+                    <input type="radio" name="rental-block" value="FULLDAY" checked>
+                    <span class="tariff-tile">
+                      <span class="tariff-name">Celý den</span>
+                      <span class="tariff-hours">08:00 – 18:00</span>
+                      <span class="tariff-price" id="price-fullday">od 400 Kč</span>
+                    </span>
+                  </label>
+
+                  <label class="tariff-option tariff-featured">
+                    <span class="tariff-tag">Nejlepší cena</span>
+                    <input type="radio" name="rental-block" value="WEEKEND">
+                    <span class="tariff-tile">
+                      <span class="tariff-name">Víkendový balíček</span>
+                      <span class="tariff-hours">Pá 14h – Ne 18h (2 dny)</span>
+                      <span class="tariff-price" id="price-weekend">od 700 Kč</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right column: customer & receipt -->
+        <div class="booking-col-sticky">
+          <form id="reservation-form" class="section-card">
+            <div class="section-card-head">
+              <span class="step-badge">3</span>
+              <h3>Zákazník a kalkulace</h3>
+            </div>
+            <div class="section-card-body">
+
+              <div class="field">
+                <label for="cust-name">Jméno a příjmení *</label>
+                <input type="text" id="cust-name" placeholder="Martin Novák" required>
+              </div>
+
+              <div class="field">
+                <label for="cust-phone">Telefon *</label>
+                <input type="tel" id="cust-phone" placeholder="+420 777 123 456" required>
+              </div>
+
+              <div class="field">
+                <label for="cust-id">Číslo OP / Pas</label>
+                <input type="text" id="cust-id" placeholder="209845112">
+              </div>
+
+              <div class="field">
+                <label for="res-note">Poznámka</label>
+                <textarea id="res-note" rows="2" placeholder="Nastavení vázání, výška postavy…"></textarea>
+              </div>
+
+              <!-- Receipt -->
+              <div class="receipt">
+                <div class="receipt-row">
+                  <span class="text-muted">Vybraný kus</span>
+                  <strong id="summary-inv" class="inv-chip" style="font-size:.8rem;">—</strong>
+                </div>
+                <div class="receipt-row">
+                  <span class="text-muted">Tarif</span>
+                  <span id="summary-tariff-label">Celý den</span>
+                </div>
+                <div class="receipt-row">
+                  <span class="text-muted">Kauce (hotovost)</span>
+                  <span>1 000 Kč</span>
+                </div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-total">
+                  <span>Cena výpůjčky</span>
+                  <span id="summary-price" class="receipt-total-price">0 Kč</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-ink btn-md btn-block">Vytvořit rezervaci</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Active Reservations Table Card (Pouze pro přihlášený personál / admina) -->
+      <div id="card-active-reservations" class="card hidden" style="margin-top: 2.5rem;">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <h3 style="font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.02em;">Aktivní rezervace k vyzvednutí</h3>
+            <span class="page-sub" style="margin-top:0;">Podle čísla rezervace nebo jména zkontrolujete zákazníka</span>
+          </div>
+          <div class="toolbar-right">
+            <span id="active-reservations-count" class="count-badge">0 rezervací</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" aria-label="Aktivní rezervace čekající na vyzvednutí">
+            <thead>
+              <tr>
+                <th>Číslo rezervace</th>
+                <th>Zákazník</th>
+                <th>Rezervovaný kus</th>
+                <th>Termín &amp; Blok</th>
+                <th class="text-right">Akce pro obsluhu</th>
+              </tr>
+            </thead>
+            <tbody id="active-reservations-tbody">
+              <tr>
+                <td colspan="5" class="text-center py-6 text-muted">Načítám rezervace…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────
+         TAB 3 – CENÍKY A KATEGORIE
+    ───────────────────────────────────────────────────── -->
+    <section id="panel-cenik" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-cenik">
+
+      <div class="cats-header">
+        <div>
+          <h1 class="page-title">Ceníky a kategorie</h1>
+          <p class="page-sub">Přehled kategorií s tarifo sazbami pro půlden, celý den a víkend</p>
+        </div>
+        <button id="btn-open-add-category" class="btn btn-ink btn-md">+ Přidat kategorii</button>
+      </div>
+
+      <div class="cats-grid" id="categories-cards-container">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: LOGIN
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-login" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-login-title">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modal-login-title">Přihlášení personálu</h3>
+        <button class="modal-close-btn modal-close" aria-label="Zavřít">&times;</button>
+      </div>
+      <form id="form-login" class="modal-body">
+        <div class="demo-box">
+          <strong>Předvyplnit:</strong>
+          <button type="button" id="btn-fill-staff" class="btn btn-outline btn-xs">Obsluha</button>
+          <button type="button" id="btn-fill-admin" class="btn btn-outline btn-xs">Admin</button>
+        </div>
+
+        <div class="field">
+          <label for="login-username">Uživatelské jméno</label>
+          <input type="text" id="login-username" required placeholder="obsluha">
+        </div>
+        <div class="field">
+          <label for="login-password">Heslo</label>
+          <input type="password" id="login-password" required placeholder="Heslo123!">
+        </div>
+
+        <div id="login-error" class="alert alert-error hidden"></div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost btn-sm modal-close">Zrušit</button>
+        <button type="submit" form="form-login" class="btn btn-ink btn-sm">Přihlásit se</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: ADD EQUIPMENT
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-add-equipment" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-add-eq-title">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modal-add-eq-title">Zaevidovat nový kus</h3>
+        <button class="modal-close-btn modal-close" aria-label="Zavřít">&times;</button>
+      </div>
+      <form id="form-add-equipment" class="modal-body">
+        <div class="field">
+          <label for="eq-inv-number">Inventární číslo *</label>
+          <input type="text" id="eq-inv-number" placeholder="např. SKI-005" required>
+        </div>
+        <div class="field">
+          <label for="eq-category-id">Kategorie *</label>
+          <select id="eq-category-id" required>
+            <!-- dynamically populated -->
+          </select>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="eq-size">Velikost / délka *</label>
+            <input type="text" id="eq-size" placeholder="175 cm" required>
+          </div>
+          <div class="field">
+            <label for="eq-year">Rok pořízení *</label>
+            <input type="number" id="eq-year" value="2024" min="1990" max="2100" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="eq-condition">Stav opotřebení</label>
+          <input type="text" id="eq-condition" value="Výborný stav" required>
+        </div>
+        <div class="field">
+          <label for="eq-status">Počáteční status</label>
+          <select id="eq-status">
+            <option value="AVAILABLE">Volné k půjčení (AVAILABLE)</option>
+            <option value="IN_SERVICE">V servisu (IN_SERVICE)</option>
+          </select>
+        </div>
+        <div id="add-equipment-error" class="alert alert-error hidden"></div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost btn-sm modal-close">Zrušit</button>
+        <button type="submit" form="form-add-equipment" class="btn btn-ink btn-sm">Uložit do inventáře</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: ADD CATEGORY
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-add-category" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-add-cat-title">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modal-add-cat-title">Vytvořit kategorii a ceník</h3>
+        <button class="modal-close-btn modal-close" aria-label="Zavřít">&times;</button>
+      </div>
+      <form id="form-add-category" class="modal-body">
+        <div class="field">
+          <label for="cat-name">Název kategorie *</label>
+          <input type="text" id="cat-name" placeholder="např. Běžky a hole" required>
+        </div>
+        <div class="field">
+          <label for="cat-desc">Popis</label>
+          <textarea id="cat-desc" rows="2" placeholder="Klasické i skate běžky…"></textarea>
+        </div>
+        <div class="grid-3">
+          <div class="field">
+            <label for="cat-price-half">Půlden (Kč) *</label>
+            <input type="number" id="cat-price-half" value="150" min="0" step="10" required>
+          </div>
+          <div class="field">
+            <label for="cat-price-day">Celý den (Kč) *</label>
+            <input type="number" id="cat-price-day" value="250" min="0" step="10" required>
+          </div>
+          <div class="field">
+            <label for="cat-price-week">Víkend (Kč) *</label>
+            <input type="number" id="cat-price-week" value="450" min="0" step="10" required>
+          </div>
+        </div>
+        <div id="add-category-error" class="alert alert-error hidden"></div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost btn-sm modal-close">Zrušit</button>
+        <button type="submit" form="form-add-category" class="btn btn-success btn-sm">Uložit kategorii</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: UPDATE WEAR CONDITION
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-update-condition" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-condition-title">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modal-condition-title">Změna stavu opotřebení</h3>
+        <button class="modal-close-btn modal-close" aria-label="Zavřít">&times;</button>
+      </div>
+      <form id="form-update-condition" class="modal-body">
+        <input type="hidden" id="edit-condition-item-id">
+
+        <div class="field">
+          <label>Vybraný kus</label>
+          <span id="edit-condition-inv-display" class="ref-label">SKI-001</span>
+        </div>
+
+        <div class="field">
+          <label for="edit-condition-select">Stav opotřebení *</label>
+          <select id="edit-condition-select" required>
+            <option value="Výborný">Výborný (jako nový / minimálně jetý)</option>
+            <option value="Velmi dobrý">Velmi dobrý (drobné kosmetické oděrky)</option>
+            <option value="Běžné opotřebení">Běžné opotřebení skluznice a hran</option>
+            <option value="Zvýšené opotřebení">Zvýšené opotřebení (škrábance)</option>
+            <option value="Nutný servis hran a skluznice">Nutný servis hran a skluznice</option>
+            <option value="Poškozeno – vyžaduje opravu">Poškozeno – vyžaduje opravu</option>
+            <option value="custom">— Zadat vlastní text —</option>
+          </select>
+        </div>
+
+        <div class="field hidden" id="edit-condition-custom-group">
+          <label for="edit-condition-custom">Vlastní popis *</label>
+          <input type="text" id="edit-condition-custom" placeholder="např. Hluboký vryp na skluznici u paty">
+        </div>
+
+        <div class="field">
+          <label for="edit-condition-status-sync">Změnit provozní status?</label>
+          <select id="edit-condition-status-sync">
+            <option value="NO_CHANGE">Ponechat aktuální status</option>
+            <option value="IN_SERVICE">Odeslat do servisu (IN_SERVICE)</option>
+            <option value="AVAILABLE">Vrátit k půjčení (AVAILABLE)</option>
+          </select>
+        </div>
+
+        <div id="update-condition-error" class="alert alert-error hidden"></div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost btn-sm modal-close">Zrušit</button>
+        <button type="submit" form="form-update-condition" class="btn btn-ink btn-sm">Uložit stav</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <img src="/static/logo.svg" alt="Půjčovna Hory &amp; Voda" class="footer-logo" width="32" height="32">
+          <span class="footer-brand-name">Půjčovna sportovního vybavení Hory &amp; Voda</span>
+        </div>
+        <p class="footer-desc">Profesionální vybavení pro vaše horské i vodní expedice. Certifikované testcentrum, pravidelný servis a garantovaná dostupnost.</p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Provozní doba</h4>
+        <p class="footer-text">Pondělí – Pátek: <strong>07:30 – 18:30</strong></p>
+        <p class="footer-text">Sobota (ranní výdej): <strong>07:00 – 12:00</strong></p>
+        <p class="footer-text">Neděle (příjem): <strong>16:00 – 20:00</strong></p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Kontakty půjčovny</h4>
+        <p class="footer-text">📍 Horská 142, Vrchlabí</p>
+        <p class="footer-text">📞 +420 499 123 456</p>
+        <p class="footer-text">✉️ info@horyavoda-pujcovna.cz</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Půjčovna sportovního vybavení Hory &amp; Voda s.r.o. | Systém Pokročilé programování (PPRO)</p>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-stack" aria-live="polite"></div>
+
+  <script src="/static/app.js?v=4.2"></script>
+</body>
+</html>
